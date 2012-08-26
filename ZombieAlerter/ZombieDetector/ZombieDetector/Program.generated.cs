@@ -16,6 +16,9 @@ namespace ZombieDetector
     public partial class Program : Gadgeteer.Program
     {
         // GTM.Module definitions
+        Gadgeteer.Modules.GHIElectronics.Button button;
+        Gadgeteer.Modules.Seeed.Relays relays;
+        Gadgeteer.Modules.Seeed.MoistureSensor moistureSensor;
 
         public static void Main()
         {
@@ -30,7 +33,13 @@ namespace ZombieDetector
 
         private void InitializeModules()
         {   
-            // Initialize GTM.Modules and event handlers here.
+            // Initialize GTM.Modules and event handlers here.		
+            relays = new GTM.Seeed.Relays(3);
+		
+            button = new GTM.GHIElectronics.Button(13);
+		
+            moistureSensor = new GTM.Seeed.MoistureSensor(14);
+
         }
     }
 }

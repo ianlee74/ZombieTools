@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using InTheHand.Net.Bluetooth;
 using InTheHand.Net.Sockets;
+using Twilio;
 
 namespace ZombieAlertService
 {
@@ -32,7 +33,7 @@ namespace ZombieAlertService
 
         }
 
-        private void SendCommand(string command)
+        public void SendCommand(string command)
         {
             UpdateStatus("Sending command: " + command);
             if (_bluetoothStream != null)
@@ -75,6 +76,7 @@ namespace ZombieAlertService
                     _client.SetPin(gadgeteerDevice.DeviceAddress, "1234");
                     _client.Connect(gadgeteerDevice.DeviceAddress, BluetoothService.SerialPort);
                     _bluetoothStream = _client.GetStream();
+
                     e.Result = true;
                 }
                 else
@@ -98,7 +100,30 @@ namespace ZombieAlertService
             else
             {
                 UpdateStatus("Connected to Zombie detector.");
+                Console.ReadLine();
+                SendTxt();
             }
+        }
+
+        private void SendTxt()
+        {
+            var _twilioClient = new TwilioClient();
+             //_twilioClient.MessageReceived += new TwilioClient.MessageReceivedEventHandler(_twilioClient_MessageReceived);
+
+            // To send an SMS message, first set the FromNumber (or default to my number) and then call:
+            var toNumber = "+19318087937";
+            var messageText = "The zombies are coming!!!";
+            TwilioClient.SendSms(toNumber, messageText);
+            TwilioClient.SendSms("+12178406722", "The zombies are coming!!");
+            TwilioClient.SendSms("+14086603819", "The zombies are coming!!");
+            TwilioClient.SendSms("+16152182869", "The zombies are coming!!");
+            TwilioClient.SendSms("+16158873311", "The zombies are coming!!");
+        }
+
+        // This checks for messages on a timer that defaults to every ten seconds, but can be changed by setting the TimerInterval
+        void _twilioClient_MessageReceived(object sender, SMSMessage e)
+        {
+            Console.WriteLine(e.Body);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
