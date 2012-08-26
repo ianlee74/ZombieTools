@@ -21,29 +21,19 @@ namespace ZombieGatlinGun
             MonitorPing();
         }
 
-        private static void CycleSitePattern()
-        {
-            while (true)
-            {
-                for (byte n = 0; n < 4; n++)
-                {
-                    Debug.Print(n.ToString());
-                    SetSitePattern(n);
-                    Thread.Sleep(2000);
-                }
-            }
-        }
-
         private static void MonitorPing()
         {
             _ping.SetLinearScale(0, 1000);
             while (true)
             {
+                // Measure distance with ping sensor.
                 var distance = _ping.Read();
                 Debug.Print(distance.ToString());
 
+                // Activate Laser
                 SetLaserState(distance < 150);
 
+                // Set site pattern & fire.
                 if (distance >= 180)
                 {
                     SetSitePattern(0);
@@ -93,6 +83,19 @@ namespace ZombieGatlinGun
             Debug.Print("Fire!");
             Thread.Sleep(1000);
             _trigger.Write(false);
+        }
+
+        private static void CycleSitePattern()
+        {
+            while (true)
+            {
+                for (byte n = 0; n < 4; n++)
+                {
+                    Debug.Print(n.ToString());
+                    SetSitePattern(n);
+                    Thread.Sleep(2000);
+                }
+            }
         }
     }
 }
